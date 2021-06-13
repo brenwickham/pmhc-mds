@@ -1,0 +1,9 @@
+{% extends "base_error.html" %}
+
+{% block content %}
+<h4>System error</h4>
+<p>Oops! The system encountered an error: {{error}}</p>
+<p>This has been logged with the timestamp of: {{errordatetime}}.</p>
+<p>Contact <a href="mailto:data@semphn.org.au?subject=PMHC-MDS system error (timestamp: {{errordatetime}})">data@semphn.org.au</a> for help.</p>
+
+{% endblock %}

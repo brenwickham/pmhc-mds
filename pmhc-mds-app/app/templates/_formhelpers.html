@@ -1,0 +1,65 @@
+
+{% macro render_field(field) %}
+<div class="form-group">
+    {{ field.label(class='text-nowrap') }}
+    {{ field(**kwargs)|safe }}
+    {% for error in field.errors %}
+    <div class="alert alert-danger" role="alert">{{ error }}</div>
+    {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro render_field_withhelpertext(field, text) %}
+<div class="form-group">
+    {{ field.label(class='text-nowrap') }}
+    {{ field(**kwargs)|safe }}
+    <small class="form-text text-muted">{{text}}</small>
+    {% for error in field.errors %}
+    <div class="alert alert-danger" role="alert">{{ error }}</div>
+    {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro render_field_withoutformgroup(field) %}
+    {{ field.label(class='text-nowrap') }}
+    {{ field(**kwargs)|safe }}
+    {% for error in field.errors %}
+    <div class="alert alert-danger" role="alert">{{ error }}</div>
+    {% endfor %}
+{% endmacro %}
+
+{% macro render_field_withoutformgroup_withhelpertext(field, text) %}
+    {{ field.label(class='text-nowrap') }}
+    {{ field(**kwargs)|safe }}
+    <small class="form-text text-muted">{{text}}</small>
+    {% for error in field.errors %}
+    <div class="alert alert-danger" role="alert">{{ error }}</div>
+    {% endfor %}
+{% endmacro %}
+
+
+{% macro render_checkboxes(field) %}
+<div class="form-group">
+    {{ field.label(class='row col text-nowrap') }}
+    {% for subfield in field %}
+         <div class="form-check form-check-inline">
+             {{ subfield(type='radio',class=kwargs['class']) }} {{subfield.label(class='form-check-label')}}
+         </div>
+     {% endfor %}
+    {% for error in field.errors %}
+    <div class="alert alert-danger" role="alert">{{ error }}</div>
+    {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro render_checkboxes_withoutformgroup(field) %}
+    {{ field.label(class='row col text-nowrap') }}
+    {% for subfield in field %}
+         <div class="form-check form-check-inline">
+             {{ subfield(type='radio',class=kwargs['class']) }} {{subfield.label(class='form-check-label')}}
+         </div>
+     {% endfor %}
+    {% for error in field.errors %}
+    <div class="alert alert-danger" role="alert">{{ error }}</div>
+    {% endfor %}
+{% endmacro %}

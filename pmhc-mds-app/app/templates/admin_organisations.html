@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container-fluid">
+
+    <h4>Organisations</h4>
+
+    <div class="row">
+        <div class="form-group col">
+            <button id="newversion" class="btn btn-primary" onclick="new_org();"> <span data-feather="plus-circle"></span> New organisation</button>
+        </div>
+        <div class="form-group col">
+            <input class="form-control" id="searchorg" name="SearchOrg" type="text" placeholder="Search organisations" value=""/>
+        </div>
+    </div>
+
+    <table id="orgtable" class="table table-sm table-striped table-sortable">
+        <thead>
+            <tr>
+                <th scope="col" onclick="setData('orgtable','name', this);" class="text-nowrap desc">Name</th>
+                <th scope="col" onclick="setData('orgtable','abn', this);">ABN</th>
+                <th scope="col" onclick="setData('orgtable','teamid', this);">Nellie Team ID</th>
+                <th scope="col" onclick="setData('orgtable','polar_key', this);">POLAR Key</th>
+                <th scope="col" onclick="setData('orgtable','pip_practice_identifier', this);">PIP Practice ID</th>
+                <th scope="col" onclick="setData('orgtable','status', this);">Status</th>
+            </tr>
+        </thead>
+        <tbody id="orgtabletablerows">
+        <tbody>
+    </table>
+
+
+</div>
+
+
+
+<script>
+
+    var csrf_token = "{{ csrf_token() }}";
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            }
+        }
+    });
+
+    //Window load:
+    window.onload = function () {
+       
+       localStorage.setItem("sortdirection", "desc");
+       setData('orgtable', "name"  );
+
+    };
+
+
+   $( "#searchorg" ).autocomplete({
+     minLength: 2,
+     source: function(request, response) {
+         $.getJSON("{{url_for('main.organisationlist')}}",{
+             q: request.term, // in flask, "q" will be the argument to look for using request.args
+         }, function(data) {
+             response(data);
+         });
+     },
+     focus: function( event, ui ) {
+       //$( "#searchorg" ).val( ui.item.name );
+       return false;
+     },
+     select: function( event, ui ) {
+       var elem = document.createElement("span");
+       elem.text = ui.item.name;
+       display_org(ui.item.id, elem, ui.item.abn, ui.item.teamid, ui.item.polar_key, ui.item.pip_practice_identifier, ui.item.status)
+       return false;
+     }
+   })
+   .autocomplete( "instance" )._renderItem = function( ul, item ) {
+     return $( "<li>" )
+       .append(
+            "<div>" + item.name + "</div>" +
+            get_key_val_for_search('ABN', item.abn) +
+            get_key_val_for_search('POLAR key', item.polar_key) +
+            get_key_val_for_search('PIP ID', item.pip_practice_identifier) +
+            get_key_val_for_search('Nellie ID', item.teamid)
+             )
+       .appendTo( ul );
+   };
+
+
+
+    function display_org(id, elem, abn, teamid, polar_key, pip_practice_identifier, status) {
+        statustoggle = "checked"
+        if (status == 0) {
+            statustoggle = ""
+        }
+    
+        localStorage.setItem("id", id);
+        localStorage.setItem("org_name", elem.text); //This is necessary to avoid non-safe characters going in to function call.
+        localStorage.setItem("abn", return_emptystring_if_null(abn));
+
+        var modal_html = '<div class="form-group">'
+        modal_html += '<label for="OrgName">Name</label><input class="form-control" id="org_name" name="OrgName" type="text" value="' + localStorage.getItem("org_name") + '"/>'
+        modal_html += '</div>'
+        modal_html += '<div class="form-group">'
+        modal_html += '<label for="ABN">ABN</label><input class="form-control" id="abn" name="abn" type="text" value="' + localStorage.getItem("abn") + '">'
+        modal_html += '</div>'
+        modal_html += '<div class="form-group">'
+        modal_html += '<label for="NellieTeamID">Nellie Team ID</label><input class="form-control" id="teamid" name="NellieTeamID" type="text" value="' + return_emptystring_if_null(teamid) + '"/>'
+        modal_html += '</div>'
+        modal_html += '<div class="form-group">'
+        modal_html += '<label for="POLARKey">POLAR Key</label><input class="form-control" id="polar_key" name="POLARKey" type="text" value="' + return_emptystring_if_null(polar_key) + '"/>'
+        modal_html += '</div>'
+        modal_html += '<div class="form-group">'
+        modal_html += '<label for="PIPID">PIP Practice ID</label><input class="form-control" id="pip_practice_identifier" name="PIPID" type="text" value="' + return_emptystring_if_null(pip_practice_identifier) + '"/>'
+        modal_html += '</div>'
+        modal_html += '<div class="custom-control custom-switch"><input type="checkbox" ' + statustoggle + ' class="custom-control-input" id="status"><label class="custom-control-label" for="status">Is active</label></div>'
+        showModal('Edit ' + localStorage.getItem("org_name"), 'Cancel', 'Save', modal_html, 'jsfunction', 'save_org', '');
+    }
+
+    function new_org() {
+        localStorage.setItem("id", "new");
+
+        var modal_html = '<div class="form-group">'
+        modal_html += '<label for="OrgName">Name</label><input class="form-control" id="org_name" name="OrgName" type="text"/>'
+        modal_html += '</div>'
+        modal_html += '<div class="form-group">'
+        modal_html += '<label for="ABN">ABN</label><input class="form-control" id="abn" name="abn" type="text"/>'
+        modal_html += '</div>'
+        modal_html += '<div class="form-group">'
+        modal_html += '<label for="NellieTeamID">Nellie Team ID</label><input class="form-control" id="teamid" name="NellieTeamID" type="text"/>'
+        modal_html += '</div>'
+        modal_html += '<div class="form-group">'
+        modal_html += '<label for="POLARKey">POLAR Key</label><input class="form-control" id="polar_key" name="POLARKey" type="text"/>'
+        modal_html += '</div>'
+        modal_html += '<div class="form-group">'
+        modal_html += '<label for="PIPID">PIP Practice ID</label><input class="form-control" id="pip_practice_identifier" name="PIPID" type="text"/>'
+        modal_html += '</div>'
+        modal_html += '<div class="d-none"><input type="checkbox" checked id="status"></div>'
+        showModal('New organisation', 'Cancel', 'Save', modal_html, 'jsfunction', 'save_org', '');
+    }
+
+    function save_org() {
+        var org_name = document.getElementById('org_name').value;
+        if ( !org_name || org_name.length == 0 ) {
+            alert('Name cannot be empty.')
+        }
+        else {
+            data = {
+                id: localStorage.getItem("id"),
+                name: org_name,
+                abn: document.getElementById('abn').value.replace(/\s+/g, ""),
+                teamid: return_null_if_empty(document.getElementById('teamid').value),
+                polar_key: return_null_if_empty(document.getElementById('polar_key').value),
+                pip_practice_identifier: return_null_if_empty(document.getElementById('pip_practice_identifier').value),
+                status: document.getElementById('status').checked,
+                }
+
+            $.ajax({
+                 type: "POST",
+                 url: "/save_organisation",
+                 contentType: 'application/json;charset=UTF-8',
+                 data: JSON.stringify(data, null, '\t'),
+                 success: function(response) {
+                        localStorage.setItem("sortdirection", "desc");
+                        setData('orgtable', "name" );
+                        $('#genericmodal').modal('toggle')
+                    },
+                 error: function(error) {
+                     var parser = new DOMParser();
+                     var doc = parser.parseFromString(error.responseText, "text/html");
+                     alert(doc.body.innerText);
+                    }
+             });
+        };
+    }
+
+
+    function return_null_if_empty(val) {
+        if ( val.length == 0 ) {
+            return null;
+        }
+        else {
+            return val;
+        }
+    }
+    
+    function return_emptystring_if_null(val) {
+        if ( !val ) {
+            return '';
+        }
+        else {
+            return val;
+        }
+    }
+
+    function get_key_val_for_search(key, val) {
+        if ( val ) {
+            return '<div class="small text-muted pl-4">' + key + ': ' + val + '</div>';
+        }
+        else {
+            return '';
+        }
+    }
+    
+</script>
+
+
+{% endblock %}

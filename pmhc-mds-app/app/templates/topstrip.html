@@ -1,0 +1,24 @@
+<div class="sticky-top bg-light p-2">
+    <div class="row">
+        <div class="col ml-2">
+             <a href="{{url_for('auth.profile')}}" class="text-muted small font-weight-bold">{{ current_user.currentorganisation.organisation_name }}</a>&nbsp;
+        </div>
+
+        <div class="col mx-auto text-muted">
+        {% if ':5000' in request.url_root or 'demo' in request.url_root %}
+            <strong class="text-danger">
+            {% if ':5000' in request.url_root %}
+            DEV db: {{config.SQLALCHEMY_DATABASE_URI.split('/')[-1]}}
+            {% elif 'demo' in request.url_root %}
+            DEMO
+            {% endif %}
+            </strong>
+        {% endif %}
+
+        
+        </div>
+
+        <div class="col-md-2">
+        </div>
+    </div>
+</div>

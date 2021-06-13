@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+{{ moment.include_moment() }}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-8">
+             </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+
+            </div>
+        </div>
+        
+
+
+    </div>
+
+    <script>
+    $( function() {
+        $( "#reportdate " ).datepicker({
+        format: "dd/mm/yyyy"});
+    });
+    
+    </script>
+
+    {% include 'footer.html' %}
+
+{% endblock %}

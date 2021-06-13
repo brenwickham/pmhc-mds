@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en" xmlns= "http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<meta name="google" content="notranslate">
+
+    <head>
+
+        {% include "base_head.html" %}
+
+        {% if current_user.is_anonymous  %}
+            <link href={{ url_for('static', filename='css/login.css') }} rel="stylesheet">
+        {% endif %}
+
+    </head>
+    <body>
+
+    {% if request.user_agent.browser == 'msie' %}
+<!--        Browser is unsupported-->
+        <main role="main" class="container-fluid d-flex flex-column h-100 mt-3">
+            <div class="alert alert-info" role="alert">Internet Explorer is not supported by this website. Please open using Chrome, Edge, or Firefox.</div>
+        </main>
+    {% else %}
+
+
+       {% if current_user.is_authenticated  %}
+       
+                <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                    <a class="navbar-brand" href={{ url_for('main.index') }}><img src={{ url_for('static', filename='img/logo.svg') }}></img></a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="{{ url_for('main.index') }}"><span data-feather="home"></span> Home <span class="sr-only"></span></a>
+                            </li>
+                            <li class="nav-item active">
+                                <a class="nav-link" href="{{ url_for('main.dashboard') }}"><span data-feather="bar-chart-2"></span> Dashboard <span class="sr-only"></span></a>
+                            </li>
+                        </ul>
+                    
+    <!--                    Right-hand side menu-->
+                        <ul class="navbar-nav my-2 my-lg-0">
+
+                            {% if current_user.isadmin == 1  %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span data-feather="lock"></span> System Admin
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="/auth/accountmgmt"><span data-feather="users"></span> Account setup</a>
+                                </div>
+                            </li>
+                            {% endif %}
+
+                            {% if  current_user.can_administer() %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span data-feather="book"></span> Admin
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    {% if current_user.can_manage_organisations() %}
+                                    <a class="dropdown-item" href="{{url_for('main.manage_organisations')}}"><span data-feather="list"></span> Manage organisations</a>
+                                    {% endif %}
+                                    <a class="dropdown-item" href="{{url_for('main.organisation_report')}}"><span data-feather="info"></span> {{current_user.currentorganisation.organisation_name}}</a>
+                                    <a class="dropdown-item" href="{{url_for('main.validate')}}"><span data-feather="check-circle"></span> Validation</a>
+                                    <a class="dropdown-item" href="{{url_for('main.practitioners')}}"><span data-feather="users"></span> Practitioners</a>
+                                    {% if current_user.can_manage_users() %}
+                                    <a class="dropdown-item" href="/auth/accountmgmt_provideradmin"><span data-feather="users"></span> User accounts</a>
+                                    {% endif %}
+                                    {% if current_user.can_delete() %}
+                                        {% if 'servicecontact' in request.endpoint %}
+                                        <div class="dropdown-divider"></div>
+                                        <button class="dropdown-item" onclick="deleteRecord()"><span data-feather="delete"></span> Delete contact</button>
+                                        {% endif %}
+                                        {% if 'k10p' in request.endpoint %}
+                                        <div class="dropdown-divider"></div>
+                                        <button class="dropdown-item" onclick="deleteRecord()"><span data-feather="delete"></span> Delete K10</button>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </li>
+                            {% endif %}
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="useraccountdropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span data-feather="user"></span> {{ current_user.firstname }}
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{url_for('auth.profile')}}"><span data-feather="settings"></span> Settings</a>
+                                    <a class="dropdown-item" href="{{url_for('auth.logout')}}"><span data-feather="log-out"></span> Log out</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    <div class="col-md-6 sticky-top float-left">
+                        {% for category, message in messages %}
+
+                            <div class="alert alert-{% if category != 'message' %}{{category}}{% else %}success{% endif %} alert-dismissible fade show col-md-6"  role="alert">
+                                {{ message }}
+                                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                {% endwith %}
+            
+            <main role="main" class="container-fluid d-flex flex-column h-100 mt-3">
+        {% endif %}
+
+        {% block content %}{% endblock %}
+
+        <!-- Generic Modal -->
+        <div class="modal fade" id="genericmodal" tabindex="-1" role="dialog" aria-labelledby="genericmodal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modaltitle"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="message" class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button id="abort" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button id="go" type="button" class="btn btn-success"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        </main>
+        
+    {% if not current_user.is_anonymous  %}
+        {% include 'footer.html' %}
+    {% endif %}
+
+<!--    End of if statement for Internet Explorer-->
+    {% endif %}
+
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src={{ url_for('static', filename='js/bootstrap.min.js') }}></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0-RC3/js/bootstrap-datepicker.min.js"></script>
+    <script src={{ url_for('static', filename='js/jquery.timepicker.js') }}></script>
+    
+    <!-- Icons. Feather.js comes from https://unpkg.com/feather-icons/dist/feather.min.js -->
+    <script src={{ url_for('static', filename='js/feather.min.js') }}></script>
+    <script>
+           //Core form validation check:
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+                
+        //Generic modal: 
+        function showModal(title, abort, go, message, action, callname, argument) {
+            $('#modaltitle').text(title);
+            $('#message').html(message);
+            $('#abort').text(abort);
+            if (action != null) {
+                $('#go').show()
+                $('#go').text(go);
+                if (action=='newlocation') {
+                    $('#go').attr("onclick","window.location.href='" + callname + "'");
+                }
+                else if (action=='jsfunction'){
+                    $('#go').attr("onclick",callname + "('" + argument + "')");
+                };
+            }
+            else {
+                $('#go').hide()
+            }
+            $('#genericmodal').modal('toggle').draggable({ handle: ".modal-header" });
+        }
+
+        function validate_email(field) {
+            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            var email=document.getElementById(field);
+            if ( email.value.length > 0 ) {
+                validemail = re.test(String(email.value).toLowerCase());
+                if( validemail ) {
+                    email.setCustomValidity('');
+                } else {
+                    email.setCustomValidity("Invalid email address.");
+                }
+            }
+            else {
+                email.setCustomValidity('');                                
+            }            
+        };
+        
+        function get_valid_url(field) {
+            var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+            var regex = new RegExp(expression);
+            return url.value.match(regex)
+            
+        };
+
+        function validate_phone_number(field) {
+            var phonefield=document.getElementById(field);
+            if ( phonefield.value.length > 0 ) {
+                //Use regex to test for number but allow spaces:
+                if( /^(?=.*\d)[\d ]+$/.test(phonefield.value) ) {
+                    phonefield.setCustomValidity('');
+                } else {
+                    phonefield.setCustomValidity("Not a number.");
+                }
+            }
+            else {
+                //Reset validity if field is empty:
+                phonefield.setCustomValidity('');
+            };
+        };
+
+
+        feather.replace()
+
+        function clear_chart(chartid) {
+            d3.select("#" + chartid).text("");
+            var svg = d3.select(chartid);
+            svg.selectAll("*").remove();
+        };
+    
+        //Wait till end of window resizing before calling the resize graph function. Code comes from https://stackoverflow.com/questions/5489946/jquery-how-to-wait-for-the-end-of-resize-event-and-only-then-perform-an-ac
+        var rtime;
+        var timeout = false;
+        var delta = 200;
+
+
+        window.setTimeout(function() {
+                $(".alert.alert-success").fadeTo(500, 0).slideUp(500, function(){
+                $(this).remove();
+            });
+        }, 2000);
+
+
+        $(document).ready(function () {
+          bsCustomFileInput.init() //For initialising the form file browse input to work with Bootstrap (see https://www.npmjs.com/package/bs-custom-file-input)
+        })
+
+        //Helper functions:
+
+
+        
+        //For debugging:
+        var toType = function(obj) {
+          return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
+        }
+        
+
+        function return_null_if_empty(val) {
+            if ( val.length == 0 ) {
+                return null;
+            }
+            else {
+                return val;
+            }
+        }
+        
+        function return_emptystring_if_null(val) {
+            if ( !val ) {
+                return '';
+            }
+            else {
+                return val;
+            }
+        }
+
+
+    </script>
+    
+    </body>
+</html>
+
+
