@@ -9,5 +9,11 @@ This repo is a project to create an open-source Flask application to collect the
 
 
 
+# Troubleshooting
+You get this message: 
 
+```
+flask/bin/python: bad interpreter: No such file or directory
+```
 
+You haven't set up the flask venv folder. 
