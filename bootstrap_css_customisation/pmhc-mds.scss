@@ -1,0 +1,269 @@
+/* Coolors Exported Palette - https://coolors.co/fcde9c-ffa552-ba5624-381d2a-c4d6b0 */
+
+$theme-colors: (
+  "primary": #FADB74,
+  "secondary": #FDF0C4,
+  "danger": #381D2A,
+  "warning": #BA5624,
+  "info": #7DA253,
+  "success": #04574D,
+  "light": #C4D6B0
+);
+
+$link-color: #106CB6; 
+
+.tabulator-edit-select-list-item {
+    background-color: #ffffff;
+}
+
+.tabulator-col-title {
+  color: #59595F;
+  font-size: .9em;
+}
+
+
+label {
+  color: #59595F;
+  font-size: .8em
+}
+
+.tag:hover {
+    color: #007bff;
+    padding: 4px;
+    border: solid 1px #007bff;
+}
+.tag_clicked {
+    color: #007bff;
+    padding: 4px;
+    border: solid 1px #007bff;
+}
+.tag-delete {
+    color: #A92523;
+    position: relative;
+    bottom: 8px;
+    left: -12px;
+} 
+
+.feather {
+  width: 16px;
+  height: 16px;
+}
+
+.feather-1em {
+  width: 1em;
+  height: 1em;
+}
+
+.feather-24{
+    width: 24px;
+    height: 24px;
+}
+
+/*! Required to prevent sticky-top content going on top of dropdown menu */
+.nav-item {
+    z-index: 9995;
+}
+
+/*! Required to prevent sticky-top content going on top of nav-link tab */
+.modal{
+  z-index: 9999 !important;
+}
+
+.modal-backdrop{
+  z-index: 9998 !important;
+}
+
+.datepicker{z-index: 99999 !important};
+.ui-timepicker-container{z-index: 99999 !important};
+
+
+.announcementdate {
+  position: relative;
+  float: right;
+  top: -40px;
+  z-index: 99;
+  font-size: .8em;
+}
+
+.shield {
+  top: .7em;
+  left: .2em;
+    position: relative;
+  height: 0;
+  z-index: 1;
+}
+
+
+.form-check-label{
+    font-weight: normal;
+}
+
+.border-3 {
+    border-width:3px !important;
+}
+
+#feedback{
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+
+
+/*! Page Plan classes  */ 
+
+
+
+/*! D3 classes  */ 
+.label {
+    font-family: sans-serif;
+    font-size: .7em;
+}
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+text {
+    font-family: sans-serif;
+}
+
+.bar {
+    fill: #27AAE1;
+}
+
+.bar:hover {
+    fill: #3ABEB6;
+}
+
+/*! These are used to control the height of a graph (in a bootstrap row/col structure). But DON'T use it on the graph col itself. Use it on an adjoining col (otherwise the graph doesn't recognise the change in size correctly) */
+
+.gh90 {
+    height: 90vh;
+}
+.gh80 {
+    height: 80vh;
+}
+.gh70 {
+    height: 70vh;
+}
+.gh60 {
+    height: 60vh;
+}
+.gh50 {
+    height: 50vh;
+}
+.gh40 {
+    height: 40vh;
+}
+.gh30 {
+    height: 30vh;
+}
+.gh20 {
+    height: 20vh;
+}
+.gh15 {
+    height: 15vh;
+    min-height: 150px !important;
+}
+.gh10 {
+    height: 10vh;
+}
+.gh5 {
+    height: 5vh;
+}
+.gh2 {
+    height: 2vh;
+}
+
+
+/* Sortable table CSS comes from https://codepen.io/jtrumbull/pen/NGZxaz */
+.table-sortable > thead > tr > th {
+  cursor: pointer;
+  position: relative;
+}
+
+.table-sortable > thead > tr > th:after,
+.table-sortable > thead > tr > th:after,
+.table-sortable > thead > tr > th:after {
+  content: ' ';
+  position: absolute;
+  height: 0;
+  width: 0;
+  right: 10px; /* (right padding / 2) - arrow width */
+  top: 16px; /* ((padding * 2) + line height) - arrow height */
+}
+
+/* Default sortable indicator */
+.table-sortable > thead > tr > th:after {
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #ccc;
+  border-bottom: 0px solid transparent;
+}
+/* !Default */
+
+/* Default sortable indicator:hover */
+.table-sortable > thead > tr > th:hover:after {
+  border-top: 5px solid #888;
+}
+/* !Default:hover */
+
+/* Ascending sortable indicator */
+.table-sortable > thead > tr > th.asc:after {
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 0px solid transparent;
+  border-bottom: 5px solid #333;
+}
+.table-sortable > thead > tr > th.asc:hover:after {
+  border-bottom: 5px solid #888;
+}
+/* !Ascending */
+
+/* Descending sortable indicator */
+.table-sortable > thead > tr > th.desc:after {    
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #333;
+  border-bottom: 5px solid transparent;
+}
+/* !Descending */
+
+/* Heading styles */
+h2.page-header {
+  margin-top: 0px;
+  padding-top: 0px;
+  line-height: 15px;
+  vertical-align: middle;
+}
+h1 > .divider:before,
+h2 > .divider:before,
+h3 > .divider:before,
+h4 > .divider:before,
+h5 > .divider:before,
+h6 > .divider:before,
+.h1 > .divider:before,
+.h2 > .divider:before,
+.h3 > .divider:before,
+.h4 > .divider:before,
+.h5 > .divider:before,
+.h6 > .divider:before {
+  color: #777;
+  content: "\0223E\0020";
+}
+
+
+
+@import "bootstrap_4.6/scss/bootstrap";
+
+
+

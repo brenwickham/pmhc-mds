@@ -44,7 +44,18 @@ def site_webmanifest():
     return send_from_directory(os.path.join(current_app.root_path, 'static/img'), 'site.webmanifest')
 
 
-#How to detect if a checkbox value is off if user doesn't explicitly change it (otherwise it will be marked as on):
-#        if request.form.get('is_removed') == '':
-#            myform.is_removed.data = True
+
+
+
+#Tips:
+# 
+# Detect if a checkbox value (example shows a field called "is_removed") is off if user doesn't explicitly change it (otherwise it will be marked as on):
+# if request.form.get('is_removed') == '':
+#    myform.is_removed.data = True
+#
+
+
+
+
+
 

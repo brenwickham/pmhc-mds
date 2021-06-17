@@ -43,7 +43,7 @@ metadata = MetaData(naming_convention=convention)
 # migrate = Migrate()
 
 login = LoginManager()
-login.login_view = 'auth.login'
+# login.login_view = 'auth.login'
 
 
 def create_app(config_class=Config):
@@ -84,4 +84,4 @@ def create_app(config_class=Config):
 #Any app import statements MUST be placed after the create_app method,
 #otherwise you will get a NameEror ("...is not defined"):
 from app.util import filters
-# from app import models
+from app import models
